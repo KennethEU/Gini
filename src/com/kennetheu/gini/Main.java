@@ -5,7 +5,7 @@ import java.text.DecimalFormat;
 public class Main {
 
     public static void main(String[] args) {
-	    CreateData income2 = new CreateData(10000);
+        CreateData income2 = new CreateData(1000);
         System.out.println("Printing");
         income2.printIncomes();
         DecimalFormat df=new DecimalFormat("0.000");
