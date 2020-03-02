@@ -6,29 +6,45 @@ import java.util.stream.DoubleStream;
 
 public class CreateData {
 
-    public int[] incomes;
-    public double[] cumulativeIncomes;
-    public double[] line45;
-    public double giniCoef;
+    private int[] incomes;
+    private double[] cumulativeIncomes;
+    private double[] line45;
+    private double giniCoef;
+
+    public int[] getIncomes() {
+        return incomes;
+    }
+
+    public double[] getCumulativeIncomes() {
+        return cumulativeIncomes;
+    }
+
+    public double[] getLine45() {
+        return line45;
+    }
+
+    public double getGiniCoef() {
+        return giniCoef;
+    }
 
     public CreateData(int i) {
         incomes = getIncomeArray(i);
         cumulativeIncomes = getCumulativeIncomes(incomes);
-        line45 = getLine45();
-        giniCoef = getGiniCoef();
+        line45 = makeLine45();
+        giniCoef = calcGiniCoef();
     }
 
     public int[] getIncomeArray(int incomes) {
         int incomeArray[] = new int[incomes];
         for (int i = 0; i < incomeArray.length; i++) {
-            incomeArray[i] = getIncome(50_000,1_000_000);
+            incomeArray[i] = makeIncome(50_000,1_000_000);
         }
         // Sort the incomes
         Arrays.sort(incomeArray);
         return incomeArray;
     }
 
-    public int getIncome(int min, int max) {
+    public int makeIncome(int min, int max) {
         return (int)(Math.random() * (max - min + 1) + min);
     }
 
@@ -47,7 +63,7 @@ public class CreateData {
         return cumulativeArray;
     }
 
-    public double[] getLine45() {
+    public double[] makeLine45() {
         double line45[] = new double[incomes.length];
         for (int i = 0; i < incomes.length; i++) {
             line45[i] = (i+1) / (double)incomes.length;
@@ -55,7 +71,7 @@ public class CreateData {
         return line45;
     }
 
-    public double getGiniCoef() {
+    public double calcGiniCoef() {
         double a[] = new double[incomes.length];
 
         for (int i = 0; i < incomes.length; i++) {
