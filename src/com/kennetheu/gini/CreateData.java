@@ -1,5 +1,7 @@
 package com.kennetheu.gini;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.stream.DoubleStream;
@@ -27,11 +29,25 @@ public class CreateData {
         return giniCoef;
     }
 
+    public CreateData(@NotNull CreateIncomeDistribution createIncomeDistribution) {
+        this.incomes = createIncomeDistribution.getIncomeDistribution();
+        this.cumulativeIncomes = getCumulativeIncomes(incomes);
+        this.line45 = makeLine45();
+        this.giniCoef = calcGiniCoef();
+    }
+
+    public CreateData(int[] incomes) {
+        this.incomes = incomes;
+        this.cumulativeIncomes = getCumulativeIncomes(incomes);
+        this.line45 = makeLine45();
+        this.giniCoef = calcGiniCoef();
+    }
+
     public CreateData(int i) {
-        incomes = getIncomeArray(i);
-        cumulativeIncomes = getCumulativeIncomes(incomes);
-        line45 = makeLine45();
-        giniCoef = calcGiniCoef();
+        this.incomes = getIncomeArray(i);
+        this.cumulativeIncomes = getCumulativeIncomes(incomes);
+        this.line45 = makeLine45();
+        this.giniCoef = calcGiniCoef();
     }
 
     public int[] getIncomeArray(int incomes) {
@@ -84,7 +100,7 @@ public class CreateData {
     public void printIncomes() {
         DecimalFormat df=new DecimalFormat("0.000");
         for (int i = 0; i < this.incomes.length; i++ ) {
-            System.out.println(i+1 + "\t" + this.incomes[i] + "\tCum: " + df.format(this.cumulativeIncomes[i]) + "\tLine45: " + this.line45[i]);
+            System.out.println(i+1 + "\tInc: " + this.incomes[i] + "\tCum: " + df.format(this.cumulativeIncomes[i]) + "\tLine45: " + df.format(this.line45[i]));
         }
         System.out.println("Ginicoef: " + df.format(giniCoef));
     }
