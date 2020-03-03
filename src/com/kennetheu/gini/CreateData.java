@@ -105,9 +105,15 @@ public class CreateData {
 
     public void printIncomes() {
         DecimalFormat df=new DecimalFormat("0.000");
-        for (int i = 0; i < this.incomes.length; i++ ) {
+        int printEvery = sumOfIndividuals / 9;
+        int i = 0;
+        while (i < this.incomes.length) {
             System.out.println(i+1 + "\tInc: " + this.incomes[i] + "\tCum: " + df.format(this.cumulativeIncomes[i]) + "\tLine45: " + df.format(this.line45[i]));
+            i = i+printEvery;
         }
-        System.out.println("Ginicoef: " + df.format(giniCoef));
+        if (i-printEvery != sumOfIndividuals-1) {
+            System.out.println(sumOfIndividuals + "\tInc: " + this.incomes[sumOfIndividuals-1] + "\tCum: " + df.format(this.cumulativeIncomes[sumOfIndividuals-1]) + "\tLine45: " + df.format(this.line45[sumOfIndividuals-1]));
+        }
+        System.out.println("There is " + sumOfIndividuals + " in the data and the ginicoef is " + df.format(giniCoef));
     }
 }
