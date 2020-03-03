@@ -12,6 +12,11 @@ public class CreateData {
     private double[] cumulativeIncomes;
     private double[] line45;
     private double giniCoef;
+    private int sumOfIndividuals;
+
+    public int getSumOfIndividuals() {
+        return sumOfIndividuals;
+    }
 
     public int[] getIncomes() {
         return incomes;
@@ -34,6 +39,7 @@ public class CreateData {
         this.cumulativeIncomes = getCumulativeIncomes(incomes);
         this.line45 = makeLine45();
         this.giniCoef = calcGiniCoef();
+        this.sumOfIndividuals = createIncomeDistribution.getSumOfIndividuals();
     }
 
     public CreateData(int[] incomes) {

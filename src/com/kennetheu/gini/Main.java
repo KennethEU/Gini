@@ -6,9 +6,11 @@ public class Main {
 
     public static void main(String[] args) {
 
-        int[] fordeling = new int[] {10, 20, 20, 20, 30, 30, 30, 30, 10, 10};
-        CreateData income5 = new CreateData(new CreateIncomeDistribution(10, 10000, fordeling));
+        int[] fordeling = new int[] {30, 30, 20, 20, 30, 40, 30, 40, 20, 20};
+        CreateIncomeDistribution income4 = new CreateIncomeDistribution(10, 100000, fordeling);
+        CreateData income5 = new CreateData(new CreateIncomeDistribution(10, 100000, fordeling));
         income5.printIncomes();
+        System.out.println(income5.getSumOfIndividuals());
 //        DecimalFormat df=new DecimalFormat("0.000");
 //        for (int i = 0; i < 1; i++) {
 //            CreateData income = new CreateData(1000);

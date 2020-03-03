@@ -7,6 +7,11 @@ public class CreateIncomeDistribution {
     private int groupSpan; // indkomstspredningen for gruppen fx 100.000
     private int[] groupSizes; // antal individer i hver gruppe
     private int[] incomeDistribution;
+    private int sumOfIndividuals;
+
+    public int getSumOfIndividuals() {
+        return sumOfIndividuals;
+    }
 
     public int[] getIncomeDistribution() {
         return incomeDistribution;
@@ -45,7 +50,7 @@ public class CreateIncomeDistribution {
 
     private int[] makeIncomeDistribution() {
 
-        int sumOfIndividuals = IntStream.of(groupSizes).sum();
+        sumOfIndividuals = IntStream.of(groupSizes).sum();
         int [] incomeDistribution = new int[sumOfIndividuals];
         int index = 0;
         for (int i = 0; i < groups; i++) {
