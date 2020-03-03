@@ -34,6 +34,14 @@ public class CreateData {
         return giniCoef;
     }
 
+    public CreateData(int groups, int groupSpan, int[] groupSizes) {
+        this.incomes = new CreateIncomeDistribution(groups, groupSpan, groupSizes).getIncomeDistribution();
+        this.cumulativeIncomes = getCumulativeIncomes(incomes);
+        this.line45 = makeLine45();
+        this.giniCoef = calcGiniCoef();
+        this.sumOfIndividuals = new CreateIncomeDistribution(groups, groupSpan, groupSizes).getSumOfIndividuals();
+    }
+
     public CreateData(@NotNull CreateIncomeDistribution createIncomeDistribution) {
         this.incomes = createIncomeDistribution.getIncomeDistribution();
         this.cumulativeIncomes = getCumulativeIncomes(incomes);
@@ -47,6 +55,7 @@ public class CreateData {
         this.cumulativeIncomes = getCumulativeIncomes(incomes);
         this.line45 = makeLine45();
         this.giniCoef = calcGiniCoef();
+        this.sumOfIndividuals = incomes.length;
     }
 
     public CreateData(int i) {
@@ -54,6 +63,7 @@ public class CreateData {
         this.cumulativeIncomes = getCumulativeIncomes(incomes);
         this.line45 = makeLine45();
         this.giniCoef = calcGiniCoef();
+        this.sumOfIndividuals = i;
     }
 
     public int[] getIncomeArray(int incomes) {
@@ -107,6 +117,7 @@ public class CreateData {
         DecimalFormat df=new DecimalFormat("0.000");
         int printEvery = sumOfIndividuals / 9;
         int i = 0;
+        System.out.println("----Printing starting----");
         while (i < this.incomes.length) {
             System.out.println(i+1 + "\tInc: " + this.incomes[i] + "\tCum: " + df.format(this.cumulativeIncomes[i]) + "\tLine45: " + df.format(this.line45[i]));
             i = i+printEvery;
@@ -114,6 +125,7 @@ public class CreateData {
         if (i-printEvery != sumOfIndividuals-1) {
             System.out.println(sumOfIndividuals + "\tInc: " + this.incomes[sumOfIndividuals-1] + "\tCum: " + df.format(this.cumulativeIncomes[sumOfIndividuals-1]) + "\tLine45: " + df.format(this.line45[sumOfIndividuals-1]));
         }
-        System.out.println("There is " + sumOfIndividuals + " in the data and the ginicoef is " + df.format(giniCoef));
+        System.out.println("There is " + sumOfIndividuals + " individuals in the data and the ginicoef is " + df.format(giniCoef));
+        System.out.println("-----Printing ended-----");
     }
 }

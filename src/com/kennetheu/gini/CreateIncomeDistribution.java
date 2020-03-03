@@ -49,7 +49,6 @@ public class CreateIncomeDistribution {
     }
 
     private int[] makeIncomeDistribution() {
-
         sumOfIndividuals = IntStream.of(groupSizes).sum();
         int [] incomeDistribution = new int[sumOfIndividuals];
         int index = 0;
@@ -58,7 +57,6 @@ public class CreateIncomeDistribution {
             int max = (i * groupSpan) + groupSpan;
             for (int j = 1; j <= groupSizes[i]; j++) {
                 incomeDistribution[index] = (int)(Math.random() * (max - min + 1) + min);
-                System.out.println(incomeDistribution[index]);
                 index++;
             }
         }
