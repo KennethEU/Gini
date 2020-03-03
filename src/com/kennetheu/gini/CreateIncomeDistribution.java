@@ -1,6 +1,5 @@
 package com.kennetheu.gini;
 
-import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 
 public class CreateIncomeDistribution {
