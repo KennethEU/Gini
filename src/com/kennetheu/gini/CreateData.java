@@ -1,7 +1,5 @@
 package com.kennetheu.gini;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.stream.DoubleStream;
@@ -43,7 +41,7 @@ public class CreateData {
         this.sumOfIndividuals = new CreateIncomeDistribution(groups, groupSpan, groupSizes).getSumOfIndividuals();
     }
 
-    public CreateData(@NotNull CreateIncomeDistribution createIncomeDistribution) {
+    public CreateData(CreateIncomeDistribution createIncomeDistribution) {
         // This constructor takes a CreateIncomeDistribution object as the parameter
         this.incomes = createIncomeDistribution.getIncomeDistribution();
         this.cumulativeIncomes = getCumulativeIncomes(incomes);
