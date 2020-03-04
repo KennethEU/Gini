@@ -69,7 +69,7 @@ public class CreateData {
     }
 
     public int[] getIncomeArray(int incomes, int minIncome, int maxIncome) {
-        int incomeArray[] = new int[incomes];
+        int[] incomeArray = new int[incomes];
         for (int i = 0; i < incomeArray.length; i++) {
             incomeArray[i] = makeIncome(minIncome,maxIncome);
         }
@@ -83,7 +83,7 @@ public class CreateData {
     }
 
     public double[] getCumulativeIncomes(int[] incomes) {
-        double cumulativeArray[] = new double[incomes.length];
+        double[] cumulativeArray = new double[incomes.length];
         double prevSum = 0;
         double sum = 0;
         for (int income : incomes) {
@@ -98,7 +98,7 @@ public class CreateData {
     }
 
     public double[] makeLine45() {
-        double line45[] = new double[incomes.length];
+        double[] line45 = new double[incomes.length];
         for (int i = 0; i < incomes.length; i++) {
             line45[i] = (i+1) / (double)incomes.length;
         }
@@ -106,13 +106,12 @@ public class CreateData {
     }
 
     public double calcGiniCoef() {
-        double a[] = new double[incomes.length];
+        double[] a = new double[incomes.length];
 
         for (int i = 0; i < incomes.length; i++) {
             a[i] = line45[i] - cumulativeIncomes[i];
         }
-        double giniCoef = DoubleStream.of(a).sum() / (DoubleStream.of(cumulativeIncomes).sum() + DoubleStream.of(a).sum());
-        return giniCoef;
+        return DoubleStream.of(a).sum() / (DoubleStream.of(cumulativeIncomes).sum() + DoubleStream.of(a).sum());
     }
 
     public void printIncomes() {
