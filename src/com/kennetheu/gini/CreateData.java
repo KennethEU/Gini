@@ -35,6 +35,7 @@ public class CreateData {
     }
 
     public CreateData(int groups, int groupSpan, int[] groupSizes) {
+        // This constructor passes the parameters to the CreateIncomeDistribution
         this.incomes = new CreateIncomeDistribution(groups, groupSpan, groupSizes).getIncomeDistribution();
         this.cumulativeIncomes = getCumulativeIncomes(incomes);
         this.line45 = makeLine45();
@@ -43,6 +44,7 @@ public class CreateData {
     }
 
     public CreateData(@NotNull CreateIncomeDistribution createIncomeDistribution) {
+        // This constructor takes a CreateIncomeDistribution object as the parameter
         this.incomes = createIncomeDistribution.getIncomeDistribution();
         this.cumulativeIncomes = getCumulativeIncomes(incomes);
         this.line45 = makeLine45();
@@ -51,6 +53,8 @@ public class CreateData {
     }
 
     public CreateData(int[] incomes) {
+        /* This constructor takes an user made income array
+        and performs the calculations */
         this.incomes = incomes;
         this.cumulativeIncomes = getCumulativeIncomes(incomes);
         this.line45 = makeLine45();
@@ -58,18 +62,18 @@ public class CreateData {
         this.sumOfIndividuals = incomes.length;
     }
 
-    public CreateData(int i) {
-        this.incomes = getIncomeArray(i);
+    public CreateData(int i, int minIncome, int maxIncome) {
+        this.incomes = getIncomeArray(i, minIncome, maxIncome);
         this.cumulativeIncomes = getCumulativeIncomes(incomes);
         this.line45 = makeLine45();
         this.giniCoef = calcGiniCoef();
         this.sumOfIndividuals = i;
     }
 
-    public int[] getIncomeArray(int incomes) {
+    public int[] getIncomeArray(int incomes, int minIncome, int maxIncome) {
         int incomeArray[] = new int[incomes];
         for (int i = 0; i < incomeArray.length; i++) {
-            incomeArray[i] = makeIncome(50_000,1_000_000);
+            incomeArray[i] = makeIncome(minIncome,maxIncome);
         }
         // Sort the incomes
         Arrays.sort(incomeArray);
