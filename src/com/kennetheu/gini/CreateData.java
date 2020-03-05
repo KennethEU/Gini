@@ -82,38 +82,6 @@ public class CreateData {
         return (int)(Math.random() * (max - min + 1) + min);
     }
 
-//    public double[] getCumulativeIncomes(int[] incomes) {
-//        double[] cumulativeArray = new double[incomes.length];
-//        double prevSum = 0;
-//        double sum = 0;
-//        for (int income : incomes) {
-//            sum += (double)income;
-//        }
-//        for ( int i = 0 ; i < incomes.length ; i++ )
-//        {
-//            cumulativeArray[i] = (prevSum + incomes[i]) / sum;
-//            prevSum += incomes[i];
-//        }
-//        return cumulativeArray;
-//    }
-
-//    public double[] makeLine45() {
-//        double[] line45 = new double[incomes.length];
-//        for (int i = 0; i < incomes.length; i++) {
-//            line45[i] = (i+1) / (double)incomes.length;
-//        }
-//        return line45;
-//    }
-
-//    public double calcGiniCoef() {
-//        double[] a = new double[incomes.length];
-//
-//        for (int i = 0; i < incomes.length; i++) {
-//            a[i] = line45[i] - cumulativeIncomes[i];
-//        }
-//        return DoubleStream.of(a).sum() / (DoubleStream.of(cumulativeIncomes).sum() + DoubleStream.of(a).sum());
-//    }
-
     public void printIncomes() {
         DecimalFormat df=new DecimalFormat("0.000");
         int printEvery = sumOfIndividuals / 9;

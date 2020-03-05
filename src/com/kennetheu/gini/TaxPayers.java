@@ -1,11 +1,13 @@
 package com.kennetheu.gini;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class TaxPayers {
     ArrayList<TaxPayer> TaxPayers = new ArrayList<TaxPayer>();
     double giniBeforeTax;
     double giniAfterTax;
+    DecimalFormat df=new DecimalFormat("0.000");
 
     public TaxPayers(CreateData incomes, int[]bracketsAndPercentage) {
         for (int income : incomes.getIncomes()) {
@@ -19,8 +21,17 @@ public class TaxPayers {
         int[] afterArray = TaxPayers.stream().mapToInt(taxPayer -> taxPayer.incomeAfterTax).toArray();
         giniBeforeTax = CalcGini.getGini(beforeArray);
         giniAfterTax = CalcGini.getGini(afterArray);
-        System.out.println(giniBeforeTax);
-        System.out.println(giniAfterTax);
+    }
+
+    public void printInfo() {
+        TaxPayers.forEach(taxPayer -> {
+            System.out.println(
+                    "Income: " + taxPayer.income +
+                    " After tax: " + taxPayer.incomeAfterTax +
+                    " Total tax: " + taxPayer.totalTax);
+        });
+        System.out.println("Gini before tax: " + df.format(giniBeforeTax));
+        System.out.println("Gini after tax: " + df.format(giniAfterTax));
     }
 
 }
