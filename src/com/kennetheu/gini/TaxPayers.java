@@ -8,13 +8,10 @@ public class TaxPayers {
     double giniAfterTax;
 
     public TaxPayers(CreateData incomes, int[]bracketsAndPercentage) {
-
         for (int income : incomes.getIncomes()) {
             TaxPayers.add(new TaxPayer(income, bracketsAndPercentage));
         }
-
         calcGini();
-
     }
 
     public void calcGini() {
