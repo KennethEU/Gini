@@ -1,5 +1,6 @@
 package com.kennetheu.gini;
 
+import java.util.Arrays;
 import java.util.stream.IntStream;
 
 public class CreateIncomeDistribution {
@@ -60,6 +61,7 @@ public class CreateIncomeDistribution {
                 index++;
             }
         }
+        Arrays.sort(incomeDistribution);
         return incomeDistribution;
     }
 }
