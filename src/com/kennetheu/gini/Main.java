@@ -13,15 +13,17 @@ public class Main {
         CreateData income6 = new CreateData(20,
                 50000,
                 2000000);
-//        income6.printIncomes();
+        income6.printIncomes();
         int[] myBrackets = new int[] {50000,25,300000,10,600000,15};
 
-        ArrayList<TaxPayer> myTaxPayers = new ArrayList<TaxPayer>();
-        for (int income : income6.getIncomes()) {
-            myTaxPayers.add(new TaxPayer(income, myBrackets));
-        }
+//        ArrayList<TaxPayer> myTaxPayers = new ArrayList<TaxPayer>();
+//        for (int income : income6.getIncomes()) {
+//            myTaxPayers.add(new TaxPayer(income, myBrackets));
+//        }
 
-        myTaxPayers.forEach(taxPayer -> {
+        TaxPayers myTaxPayers = new TaxPayers(income6, myBrackets);
+
+        myTaxPayers.TaxPayers.forEach(taxPayer -> {
             System.out.println(
                     "Income: " + taxPayer.income +
                     " After tax: " + taxPayer.incomeAfterTax +

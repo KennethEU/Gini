@@ -6,6 +6,18 @@ public class TaxPayer {
     public int totalTax;
     public int[] bracketsAndPercentages;
 
+    public int getIncome() {
+        return income;
+    }
+
+    public int getIncomeAfterTax() {
+        return incomeAfterTax;
+    }
+
+    public int getTotalTax() {
+        return totalTax;
+    }
+
     public TaxPayer(int taxPayerIncome, int[] bracketsAndPercentages) {
         this.income = taxPayerIncome;
         this.bracketsAndPercentages = bracketsAndPercentages;
