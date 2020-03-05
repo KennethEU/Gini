@@ -17,8 +17,8 @@ public class TaxPayers {
     }
 
     public void calcGini() {
-        int[] beforeArray = TaxPayers.stream().mapToInt(taxPayer -> taxPayer.income).toArray();
-        int[] afterArray = TaxPayers.stream().mapToInt(taxPayer -> taxPayer.incomeAfterTax).toArray();
+        int[] beforeArray = TaxPayers.stream().mapToInt(taxPayer -> taxPayer.getIncome()).toArray();
+        int[] afterArray = TaxPayers.stream().mapToInt(taxPayer -> taxPayer.getIncomeAfterTax()).toArray();
         giniBeforeTax = CalcGini.getGini(beforeArray);
         giniAfterTax = CalcGini.getGini(afterArray);
     }
@@ -26,9 +26,9 @@ public class TaxPayers {
     public void printInfo() {
         TaxPayers.forEach(taxPayer -> {
             System.out.println(
-                    "Income: " + taxPayer.income +
-                    " After tax: " + taxPayer.incomeAfterTax +
-                    " Total tax: " + taxPayer.totalTax);
+                    "Income: " + taxPayer.getIncome() +
+                    " After tax: " + taxPayer.getIncomeAfterTax() +
+                    " Total tax: " + taxPayer.getTotalTax());
         });
         System.out.println("Gini before tax: " + df.format(giniBeforeTax));
         System.out.println("Gini after tax: " + df.format(giniAfterTax));

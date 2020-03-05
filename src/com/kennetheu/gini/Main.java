@@ -7,7 +7,7 @@ public class Main {
                 150_000,
                 myDist);
 
-        int[] myTaxSystem = new int[] {50_000,30,400_000,10,700_000,15};
+        int[] myTaxSystem = new int[] {50_000,30,400_000,20,700_000,15};
 
         TaxPayers myTaxPayers = new TaxPayers(myIncomes, myTaxSystem);
         myTaxPayers.printInfo();
