@@ -22,9 +22,9 @@ public class TaxPayer {
         totalTax = 0;
         int bracketsRun = 0;
         for (int i = 0; i < bracketsAndPercentages.length; i+=2) {
-            if ((income - bracketsRun) - bracketsAndPercentages[i] > 0) {
+            if (income - bracketsAndPercentages[i] > 0) {
                 bracketsRun += bracketsAndPercentages[i];
-                totalTax += taxIncome(income - bracketsRun, bracketsAndPercentages[i+1]);
+                totalTax += taxIncome(income - bracketsAndPercentages[i], bracketsAndPercentages[i+1]);
             }
             else {
                 break;
