@@ -19,9 +19,10 @@ public class Main {
         System.out.println("Velkommen til Kenneths Gini-program!");
         System.out.println("------------------------------------");
         CreateData myIncomes = null;
+        TaxPayers myTaxPayers = null;
         // Create a menu
         do {
-
+            System.out.println();
             System.out.println("Du har nu følgende valgmuligheder:");
             System.out.println("[1] Lav en indkomstfordeling");
             System.out.println("[2] Print Gini for indkomstfordeling (før skat)");
@@ -44,27 +45,45 @@ public class Main {
                         System.out.println("Gini-koefficent for indkomstfordelingen: " + myIncomes.getGiniCoef());
                         System.out.println();
                     } else {
-                        System.out.println("FEJL: Du har ikke lavet en indkomstfordeling endnu");
+                        System.out.println("--- FEJL: Du har ikke lavet en indkomstfordeling endnu ---");
                         System.out.println();
                     }
                     break;
                 case '3':
                     if (myIncomes != null) {
                         // lav skattesystem her!!
-                        int[] myTaxSystem = new int[]{50_000, 30, 400_000, 20, 700_000, 15};
-                        TaxPayers myTaxPayers = new TaxPayers(myIncomes, myTaxSystem);
-                        myTaxPayers.printInfo();
-                    } else {
-                        System.out.println("FEJL: Du har ikke lavet en indkomstfordeling endnu");
                         System.out.println();
+                        System.out.println("Du har nu følgende muligheder");
+                        System.out.println("[1] Brug standard skattesystem");
+                        System.out.println("[2] Lav dit eget falde skattesystem");
+                        System.out.println("[3] Lav dit eget progressive skattesystem");
+                        System.out.println("[4] Gå tilbage");
+                        System.out.print("Dit valg: ");
+                        choice = keyboard.next().charAt(0);
+                        switch (choice) {
+                            case '1':
+                                int[] myTaxSystem = new int[]{50_000, 30, 400_000, 20, 700_000, 15};
+                                myTaxPayers = new TaxPayers(myIncomes, myTaxSystem);
+                                myTaxPayers.printInfo();
+                                break;
+                            case '4':
+                                break;
+                        }
+                    } else {
+                        System.out.println("--- FEJL: Du har ikke lavet en indkomstfordeling endnu ---");
                     }
                     break;
-
+                case '4':
+                    if (myTaxPayers != null) {
+                        System.out.println("Gini-koefficent for indkomstfordelingen efter skat: " + myTaxPayers.getGiniAfterTax());
+                    } else {
+                        System.out.println("--- FEJL: Du har ikke beskattet din indkomstfordeling endnu ---");
+                    }
+                    break;
                 case '9':
                     break;
                 default:
-                    System.out.println("FEJL: Valg ikke gyldigt");
-                    System.out.println();
+                    System.out.println("--- FEJL: Valg ikke gyldigt ---");
             }
 
         } while (choice != '9');

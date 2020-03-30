@@ -16,6 +16,14 @@ public class TaxPayers {
         calcGini();
     }
 
+    public double getGiniBeforeTax() {
+        return giniBeforeTax;
+    }
+
+    public double getGiniAfterTax() {
+        return giniAfterTax;
+    }
+
     public void calcGini() {
         int[] beforeArray = TaxPayers.stream().mapToInt(taxPayer -> taxPayer.getIncome()).toArray();
         int[] afterArray = TaxPayers.stream().mapToInt(taxPayer -> taxPayer.getIncomeAfterTax()).toArray();
