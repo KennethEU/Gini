@@ -13,22 +13,22 @@ class Scenarios {
         const scenarios = {
             denmark: {
                 name: 'Danmark',
-                description: 'Dansk indkomstfordeling med progressiv skat',
+                description: 'Dansk indkomstfordeling med stærk progressiv skat',
                 population: 200,
                 groups: 10,
                 groupSpan: 100000,
                 distributionType: 'normal',
                 taxBrackets: [
-                    { threshold: 50000, rate: 8 },
-                    { threshold: 200000, rate: 12 },
-                    { threshold: 300000, rate: 15 },
-                    { threshold: 999999, rate: 15 }
+                    { threshold: 46000, rate: 0 },      // Personfradrag - ingen skat
+                    { threshold: 150000, rate: 37 },    // Bundskattesats + kommune
+                    { threshold: 400000, rate: 42 },    // Mellemskat
+                    { threshold: 999999, rate: 52 }     // Topskat (høj progressivitet)
                 ],
                 expectedGini: 0.28
             },
             usa: {
                 name: 'USA',
-                description: 'Amerikansk indkomstfordeling med moderat skat',
+                description: 'Amerikansk indkomstfordeling med svag progressivitet',
                 population: 200,
                 groups: 10,
                 groupSpan: 120000,
@@ -37,22 +37,22 @@ class Scenarios {
                     { threshold: 80000, rate: 10 },
                     { threshold: 150000, rate: 12 },
                     { threshold: 250000, rate: 22 },
-                    { threshold: 999999, rate: 24 }
+                    { threshold: 999999, rate: 24 }     // Lav topskat = mindre progressivitet
                 ],
                 expectedGini: 0.41
             },
             sweden: {
                 name: 'Sverige',
-                description: 'Svensk indkomstfordeling med høj progressiv skat',
+                description: 'Svensk indkomstfordeling med meget høj progressiv skat',
                 population: 200,
                 groups: 10,
                 groupSpan: 95000,
                 distributionType: 'normal',
                 taxBrackets: [
-                    { threshold: 45000, rate: 7 },
-                    { threshold: 180000, rate: 13 },
-                    { threshold: 320000, rate: 20 },
-                    { threshold: 999999, rate: 25 }
+                    { threshold: 50000, rate: 0 },      // Grundavdrag
+                    { threshold: 200000, rate: 32 },    // Kommunalskat
+                    { threshold: 400000, rate: 52 },    // Statlig inkomstskatt
+                    { threshold: 999999, rate: 57 }     // Högst progressiv
                 ],
                 expectedGini: 0.27
             },
@@ -121,26 +121,26 @@ class Scenarios {
                 <h4>Danmark 🇩🇰</h4>
                 <p>Danmark har en af verdens mest ligelige indkomstfordelinger med en Gini-koefficient på ca. 0.28.</p>
                 <ul>
-                    <li><strong>Progressiv skat:</strong> Højere indkomster betaler en større andel</li>
-                    <li><strong>Velfærdsstat:</strong> Høje skatter finansierer gratis sundhed og uddannelse</li>
-                    <li><strong>Resultat:</strong> Lav ulighed og høj social mobilitet</li>
+                    <li><strong>Stærk progressiv skat:</strong> 0% → 52% (personfradrag + topskat)</li>
+                    <li><strong>Stor omfordeling:</strong> De rigeste betaler over 50%, de fattigste intet</li>
+                    <li><strong>Resultat:</strong> Lav ulighed og stærk velfærdsstat</li>
                 </ul>
             `,
             usa: `
                 <h4>USA 🇺🇸</h4>
                 <p>USA har større indkomstulighed end de fleste udviklede lande med en Gini på ca. 0.41.</p>
                 <ul>
-                    <li><strong>Lavere skatter:</strong> Mindre omfordeling end i europæiske lande</li>
-                    <li><strong>Markedsorienteret:</strong> Mindre statslig indgriben</li>
-                    <li><strong>Resultat:</strong> Større ulighed men også højere økonomisk vækst</li>
+                    <li><strong>Svag progressivitet:</strong> 10% → 24% (lille forskel = lille effekt)</li>
+                    <li><strong>Lavere skatter:</strong> Selv de rigeste betaler under 25%</li>
+                    <li><strong>Resultat:</strong> Større ulighed, mindre omfordeling</li>
                 </ul>
             `,
             sweden: `
                 <h4>Sverige 🇸🇪</h4>
                 <p>Sverige har den laveste Gini-koefficient i verden på ca. 0.27.</p>
                 <ul>
-                    <li><strong>Meget progressiv skat:</strong> Stærk omfordeling</li>
-                    <li><strong>Nordisk model:</strong> Kombination af markedsøkonomi og velfærd</li>
+                    <li><strong>Meget progressiv skat:</strong> 0% → 57% (grundavdrag + høj topskat)</li>
+                    <li><strong>Stærkeste omfordeling:</strong> Mest effektive til at reducere ulighed</li>
                     <li><strong>Resultat:</strong> Meget lav ulighed og høj livskvalitet</li>
                 </ul>
             `,
