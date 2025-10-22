@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gini-koefficient Simulator</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <h1>Gini-koefficient Simulator</h1>
+            <p class="subtitle">Udforsk hvordan skatter påvirker indkomstulighed</p>
+            <div class="info-box">
+                <span class="info-icon">ℹ️</span>
+                <span>Gini-koefficienten måler indkomstulighed: <strong>0</strong> = perfekt lighed, <strong>1</strong> = perfekt ulighed</span>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <div class="main-content">
+            <!-- Left Side: Charts -->
+            <div class="charts-section">
+                <!-- Before Tax Chart -->
+                <div class="chart-container">
+                    <h2>Før Skat</h2>
+                    <div class="gini-display before-tax">
+                        <span class="label">Gini-koefficient:</span>
+                        <span class="value" id="gini-before">0.00</span>
+                    </div>
+                    <canvas id="chart-before"></canvas>
+                </div>
+
+                <!-- After Tax Chart -->
+                <div class="chart-container">
+                    <h2>Efter Skat</h2>
+                    <div class="gini-display after-tax">
+                        <span class="label">Gini-koefficient:</span>
+                        <span class="value" id="gini-after">0.00</span>
+                    </div>
+                    <canvas id="chart-after"></canvas>
+                    <div class="gini-change" id="gini-change">
+                        Ingen ændring
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Side: Controls -->
+            <div class="controls-section">
+                <!-- Preset Scenarios -->
+                <div class="control-group">
+                    <h3>Hurtstart: Vælg et scenarie</h3>
+                    <div class="preset-buttons">
+                        <button class="preset-btn" data-scenario="denmark">🇩🇰 Danmark</button>
+                        <button class="preset-btn" data-scenario="usa">🇺🇸 USA</button>
+                        <button class="preset-btn" data-scenario="sweden">🇸🇪 Sverige</button>
+                        <button class="preset-btn" data-scenario="equal">⚖️ Perfekt Lighed</button>
+                    </div>
+                </div>
+
+                <!-- Population Control -->
+                <div class="control-group">
+                    <h3>Befolkning</h3>
+                    <label>
+                        Antal personer: <span id="population-value">100</span>
+                        <input type="range" id="population" min="50" max="1000" value="100" step="50">
+                    </label>
+                    <label>
+                        Indkomstgrupper: <span id="groups-value">10</span>
+                        <input type="range" id="groups" min="5" max="20" value="10" step="1">
+                    </label>
+                    <label>
+                        Indkomstspredning: <span id="span-value">100,000</span> kr
+                        <input type="range" id="group-span" min="50000" max="300000" value="100000" step="10000">
+                    </label>
+                </div>
+
+                <!-- Income Distribution -->
+                <div class="control-group">
+                    <h3>Indkomstfordeling</h3>
+                    <p class="help-text">Juster fordelingen af personer i indkomstgrupper</p>
+                    <select id="distribution-type">
+                        <option value="equal">Ligeligt fordelt</option>
+                        <option value="normal">Normal fordeling</option>
+                        <option value="skewed" selected>Skæv fordeling (realistisk)</option>
+                        <option value="extreme">Ekstrem ulighed</option>
+                    </select>
+                </div>
+
+                <!-- Tax System -->
+                <div class="control-group">
+                    <h3>Skattesystem</h3>
+                    <div id="tax-brackets">
+                        <!-- Tax brackets will be added dynamically -->
+                    </div>
+                    <button id="add-bracket" class="btn-secondary">+ Tilføj skattetrin</button>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="control-group actions">
+                    <button id="calculate" class="btn-primary">Beregn Gini-koefficient</button>
+                    <button id="reset" class="btn-secondary">Nulstil</button>
+                </div>
+
+                <!-- Educational Challenges -->
+                <div class="control-group challenge-box">
+                    <h3>💡 Udfordring</h3>
+                    <p id="challenge-text">Prøv at reducere uligheden til under 0.30 ved kun at ændre skattesystemet!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Real World Comparison -->
+        <div class="comparison-section">
+            <h3>Sammenligning med virkelige lande (2023)</h3>
+            <div class="country-grid">
+                <div class="country-card">
+                    <span class="flag">🇩🇰</span>
+                    <span class="country-name">Danmark</span>
+                    <span class="country-gini">0.28</span>
+                </div>
+                <div class="country-card">
+                    <span class="flag">🇸🇪</span>
+                    <span class="country-name">Sverige</span>
+                    <span class="country-gini">0.27</span>
+                </div>
+                <div class="country-card">
+                    <span class="flag">🇩🇪</span>
+                    <span class="country-name">Tyskland</span>
+                    <span class="country-gini">0.32</span>
+                </div>
+                <div class="country-card">
+                    <span class="flag">🇺🇸</span>
+                    <span class="country-name">USA</span>
+                    <span class="country-gini">0.41</span>
+                </div>
+                <div class="country-card">
+                    <span class="flag">🇧🇷</span>
+                    <span class="country-name">Brasilien</span>
+                    <span class="country-gini">0.52</span>
+                </div>
+                <div class="country-card">
+                    <span class="flag">🇿🇦</span>
+                    <span class="country-name">Sydafrika</span>
+                    <span class="country-gini">0.63</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/gini-calc.js"></script>
+    <script src="js/chart-handler.js"></script>
+    <script src="js/scenarios.js"></script>
+    <script src="js/ui-controller.js"></script>
+</body>
+</html>
