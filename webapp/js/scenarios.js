@@ -167,33 +167,39 @@ class ChallengeGenerator {
     static challenges = [
         {
             id: 1,
-            text: 'Prøv at reducere uligheden til under 0.30 ved kun at ændre skattesystemet!',
-            check: (results) => results.giniAfter < 0.30,
-            hint: 'Prøv at øge skatten for de højeste indkomster'
+            text: 'Hvorfor reducerer flad skat ikke Gini-koefficienten? Prøv selv og tænk over det!',
+            check: (results) => true,
+            hint: 'Flad skat bevarer relative forhold - hvis alle betaler 25%, har de rige stadig lige meget mere end de fattige'
         },
         {
             id: 2,
-            text: 'Skab en fordeling der ligner Danmarks med Gini omkring 0.28',
+            text: 'Reducer uligheden med mindst 20% ved hjælp af progressiv beskatning',
+            check: (results) => results.giniChangePercent > 20,
+            hint: 'Brug flere skattetrin med stigende satser - fx 8%, 12%, 15%, 20%'
+        },
+        {
+            id: 3,
+            text: 'Skab en fordeling der ligner Danmarks: Gini omkring 0.28 efter skat',
             check: (results) => Math.abs(results.giniAfter - 0.28) < 0.03,
             hint: 'Brug en normal fordeling med moderat progressiv skat'
         },
         {
-            id: 3,
-            text: 'Reducer uligheden med mindst 20% gennem beskatning',
-            check: (results) => results.giniChangePercent > 20,
-            hint: 'Prøv flere skattetrin med stigende satser'
-        },
-        {
             id: 4,
-            text: 'Sammenlign effekten af flad skat (samme procent for alle) vs progressiv skat',
-            check: (results) => true, // Always pass, just an exploration task
-            hint: 'Opret først en flad skat, beregn, og sammenlign derefter med progressiv'
+            text: 'Eksperimenter: Sammenlign flad skat (25%) med progressiv skat - hvad er forskellen?',
+            check: (results) => true,
+            hint: 'Start med flad skat, noter Gini-ændringen, skift til progressiv og sammenlign'
         },
         {
             id: 5,
-            text: 'Hvad sker der med Gini hvis kun de rigeste 10% betaler skat?',
-            check: (results) => true, // Exploration task
-            hint: 'Sæt skatten til 0% for de første skattetrin og høj for de sidste'
+            text: 'Ekstrem progressivitet: Prøv at lave et system hvor de rigeste betaler 40% effektiv skat',
+            check: (results) => true,
+            hint: 'Brug mange skattetrin med høje satser for de højeste indkomster'
+        },
+        {
+            id: 6,
+            text: 'Hvad sker der hvis kun indkomst over 500,000 kr beskattes?',
+            check: (results) => true,
+            hint: 'Sæt første skattetrin til 500,000 kr med 0%, og derefter højere satser'
         }
     ];
 

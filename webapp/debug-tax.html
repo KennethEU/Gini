@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Debug Skatteberegning</title>
+    <style>
+        body { font-family: monospace; padding: 20px; background: #1e1e1e; color: #d4d4d4; }
+        .result { margin: 10px 0; padding: 10px; background: #2a2a2a; border-left: 3px solid #4fc3f7; }
+        .error { border-left-color: #f44336; }
+        h2 { color: #4fc3f7; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Debug: Skatteberegning</h1>
+    <div id="output"></div>
+
+    <script src="js/gini-calc.js"></script>
+    <script>
+        const output = document.getElementById('output');
+
+        function log(html) {
+            output.innerHTML += '<div class="result">' + html + '</div>';
+        }
+
+        function logError(html) {
+            output.innerHTML += '<div class="result error">' + html + '</div>';
+        }
+
+        // Test 1: Flad skat
+        log('<h2>Test 1: Flad skat 25%</h2>');
+        const taxpayer1 = new TaxPayer(100000, [99999999, 25]);
+        log(`Indkomst: 100,000 kr`);
+        log(`Skat betalt: ${taxpayer1.getTotalTax().toLocaleString('da-DK')} kr`);
+        log(`Efter skat: ${taxpayer1.getIncomeAfterTax().toLocaleString('da-DK')} kr`);
+        log(`Effektiv sats: ${((taxpayer1.getTotalTax() / 100000) * 100).toFixed(1)}%`);
+
+        if (taxpayer1.getTotalTax() === 25000) {
+            log('✅ KORREKT: 25% af 100k = 25,000 kr');
+        } else {
+            logError(`❌ FEJL: Forventede 25,000 kr men fik ${taxpayer1.getTotalTax()} kr`);
+        }
+
+        // Test 2: Progressiv skat
+        log('<h2>Test 2: Progressiv skat (dansk system)</h2>');
+        const taxpayer2 = new TaxPayer(500000, [50000, 8, 200000, 12, 400000, 15]);
+        log(`Indkomst: 500,000 kr`);
+        log(`Skattetrin:`);
+        log(`- Første 50,000 kr @ 8% = ${(50000 * 0.08).toLocaleString('da-DK')} kr`);
+        log(`- Næste 200,000 kr @ 12% = ${(200000 * 0.12).toLocaleString('da-DK')} kr`);
+        log(`- Næste 250,000 kr @ 15% = ${(250000 * 0.15).toLocaleString('da-DK')} kr`);
+        log(`- Forventet total: ${(4000 + 24000 + 37500).toLocaleString('da-DK')} kr`);
+        log(`<br>Faktisk skat betalt: ${taxpayer2.getTotalTax().toLocaleString('da-DK')} kr`);
+        log(`Efter skat: ${taxpayer2.getIncomeAfterTax().toLocaleString('da-DK')} kr`);
+        log(`Effektiv sats: ${((taxpayer2.getTotalTax() / 500000) * 100).toFixed(1)}%`);
+
+        if (taxpayer2.getTotalTax() === 65500) {
+            log('✅ KORREKT: Progressiv skat beregnet korrekt');
+        } else {
+            logError(`❌ FEJL: Forventede 65,500 kr men fik ${taxpayer2.getTotalTax()} kr`);
+        }
+
+        // Test 3: Gini med flad skat
+        log('<h2>Test 3: Gini-koefficient med flad skat</h2>');
+        const incomes = [50000, 100000, 200000, 500000, 1000000];
+        log(`Indkomster: ${incomes.map(i => i.toLocaleString('da-DK')).join(', ')} kr`);
+
+        const giniBefore = GiniCalculator.calculateGini(incomes);
+        log(`Gini før skat: ${giniBefore.toFixed(3)}`);
+
+        // Apply flat 25% tax
+        const flatResults = TaxSystem.applyTaxes(incomes, [99999999, 25]);
+        log(`Gini efter 25% flad skat: ${flatResults.giniAfter.toFixed(3)}`);
+        log(`Ændring: ${flatResults.giniChange.toFixed(3)} (${flatResults.giniChangePercent.toFixed(1)}%)`);
+
+        log('<br><strong>Analyse af flad skat og Gini:</strong>');
+        log('Når ALLE betaler samme PROCENT:');
+
+        // Show before and after ratios
+        const richestBefore = incomes[incomes.length - 1];
+        const poorestBefore = incomes[0];
+        const ratioBefore = richestBefore / poorestBefore;
+
+        const richestAfter = flatResults.incomesAfter[flatResults.incomesAfter.length - 1];
+        const poorestAfter = flatResults.incomesAfter[0];
+        const ratioAfter = richestAfter / poorestAfter;
+
+        log(`- Rigeste/Fattigste før skat: ${ratioBefore.toFixed(2)}x`);
+        log(`- Rigeste/Fattigste efter skat: ${ratioAfter.toFixed(2)}x`);
+        log(`- Forholdet er ${ratioBefore === ratioAfter ? 'UÆNDRET' : 'ændret'}`);
+
+        if (Math.abs(ratioBefore - ratioAfter) < 0.01) {
+            log(`<br>✅ Dette er MATEMATISK KORREKT!`);
+            log(`Flad skat (samme %) bevarer RELATIVE forhold.`);
+            log(`Derfor ændres Gini-koefficienten meget lidt eller slet ikke.`);
+        } else {
+            logError(`❌ FEJL: Flad skat burde bevare relative forhold`);
+        }
+
+        // Test 4: Gini med progressiv skat
+        log('<h2>Test 4: Gini-koefficient med progressiv skat</h2>');
+        const progressiveResults = TaxSystem.applyTaxes(incomes, [50000, 8, 200000, 12, 500000, 20]);
+        log(`Gini efter progressiv skat: ${progressiveResults.giniAfter.toFixed(3)}`);
+        log(`Ændring: ${progressiveResults.giniChange.toFixed(3)} (${progressiveResults.giniChangePercent.toFixed(1)}%)`);
+
+        const richestAfterProg = progressiveResults.incomesAfter[progressiveResults.incomesAfter.length - 1];
+        const poorestAfterProg = progressiveResults.incomesAfter[0];
+        const ratioAfterProg = richestAfterProg / poorestAfterProg;
+
+        log(`- Rigeste/Fattigste efter progressiv skat: ${ratioAfterProg.toFixed(2)}x`);
+        log(`- Før skat: ${ratioBefore.toFixed(2)}x`);
+        log(`- Reduktion i forhold: ${((ratioBefore - ratioAfterProg) / ratioBefore * 100).toFixed(1)}%`);
+
+        if (progressiveResults.giniChange > flatResults.giniChange + 0.01) {
+            log(`<br>✅ KORREKT: Progressiv skat reducerer ulighed mere end flad skat`);
+        } else {
+            logError(`❌ FEJL: Progressiv skat burde reducere mere end flad skat`);
+        }
+
+        // Test 5: Debug current tax calculation step by step
+        log('<h2>Test 5: Step-by-step beregning</h2>');
+        log('Lad os tracke gennem en flad skat beregning manuelt:');
+
+        const testIncome = 100000;
+        const testBrackets = [99999999, 25];
+
+        log(`<br>Input: indkomst=${testIncome}, brackets=[${testBrackets.join(', ')}]`);
+        log(`<br>Kode gennemgang:`);
+        log(`let remainingIncome = ${testIncome};`);
+        log(`<br>Loop iteration 1:`);
+        log(`  threshold = ${testBrackets[0]}`);
+        log(`  rate = ${testBrackets[1]}`);
+        log(`  if (remainingIncome > threshold) // ${testIncome} > ${testBrackets[0]}?`);
+        log(`  -> ${testIncome > testBrackets[0] ? 'TRUE' : 'FALSE'}`);
+
+        if (testIncome > testBrackets[0]) {
+            log(`  Går i if-grenen:`);
+            log(`    taxableAmount = min(${testBrackets[0]}, ${testIncome}) = ${Math.min(testBrackets[0], testIncome)}`);
+            log(`    tax = ${Math.min(testBrackets[0], testIncome)} * ${testBrackets[1]}% = ${Math.floor(Math.min(testBrackets[0], testIncome) * testBrackets[1] / 100)}`);
+        } else {
+            log(`  Går i else-grenen:`);
+            log(`    tax = ${testIncome} * ${testBrackets[1]}% = ${Math.floor(testIncome * testBrackets[1] / 100)}`);
+            log(`    break;`);
+        }
+
+        log(`<br>Forventet resultat: ${testIncome * testBrackets[1] / 100} kr`);
+        log(`Faktisk resultat: ${taxpayer1.getTotalTax()} kr`);
+
+    </script>
+</body>
+</html>

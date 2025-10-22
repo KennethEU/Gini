@@ -109,9 +109,22 @@
                         <button class="tax-profile-btn active" data-profile="progressive">Progressiv</button>
                     </div>
 
-                    <!-- Tax Brackets with Visual Representation -->
-                    <div class="tax-explanation">
+                    <!-- Tax Explanation Box -->
+                    <div class="tax-explanation" id="tax-explanation">
                         <p class="help-text"><strong>Progressiv skat betyder:</strong> Jo mere du tjener, jo højere procent betaler du.</p>
+                    </div>
+
+                    <!-- Flat Tax Warning -->
+                    <div class="flat-tax-warning" id="flat-tax-warning" style="display: none;">
+                        <div class="warning-title">💡 Vidste du?</div>
+                        <p><strong>Flad skat reducerer IKKE uligheden!</strong></p>
+                        <p>Når alle betaler samme procent (fx 25%), bevares de relative forhold:</p>
+                        <ul>
+                            <li>Person med 100k får 75k tilbage (75%)</li>
+                            <li>Person med 1M får 750k tilbage (75%)</li>
+                            <li>Forholdet 10:1 er uændret!</li>
+                        </ul>
+                        <p><small>Derfor bruges progressiv skat til at reducere ulighed.</small></p>
                     </div>
 
                     <div id="tax-brackets" class="tax-brackets-container">

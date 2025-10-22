@@ -273,21 +273,31 @@ class UIController {
         const container = document.getElementById('tax-brackets');
         container.innerHTML = '';
 
+        // Show/hide warnings and explanations
+        const flatWarning = document.getElementById('flat-tax-warning');
+        const taxExplanation = document.getElementById('tax-explanation');
+
         // Load profile brackets
         switch(profile) {
             case 'none':
                 // No brackets - no tax
                 this.addTaxBracketElement(99999999, 0, 0);
+                flatWarning.style.display = 'none';
+                taxExplanation.style.display = 'none';
                 break;
             case 'flat':
                 // Flat 25% tax on everything
                 this.addTaxBracketElement(99999999, 25, 0);
+                flatWarning.style.display = 'block';
+                taxExplanation.style.display = 'none';
                 break;
             case 'progressive':
                 // Default progressive system
                 this.addTaxBracketElement(50000, 8, 0);
                 this.addTaxBracketElement(200000, 12, 1);
                 this.addTaxBracketElement(400000, 15, 2);
+                flatWarning.style.display = 'none';
+                taxExplanation.style.display = 'block';
                 break;
         }
 

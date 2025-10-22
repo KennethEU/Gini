@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Skatteberegninger</title>
+    <style>
+        body {
+            font-family: monospace;
+            padding: 20px;
+            background: #1e1e1e;
+            color: #d4d4d4;
+        }
+        .test {
+            margin: 20px 0;
+            padding: 15px;
+            border-left: 4px solid #4a4a4a;
+        }
+        .test.pass {
+            border-left-color: #4caf50;
+            background: #1b2e1b;
+        }
+        .test.fail {
+            border-left-color: #f44336;
+            background: #2e1b1b;
+        }
+        .test-name {
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+        }
+        .expected, .actual {
+            margin: 5px 0;
+        }
+        h1 {
+            color: #4fc3f7;
+        }
+        h2 {
+            color: #ffa726;
+            margin-top: 30px;
+        }
+        .summary {
+            background: #2a2a2a;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        code {
+            background: #2a2a2a;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test Suite: Skatteberegninger</h1>
+    <div id="output"></div>
+
+    <script src="js/gini-calc.js"></script>
+    <script>
+        // Test framework
+        class TestRunner {
+            constructor() {
+                this.tests = [];
+                this.passed = 0;
+                this.failed = 0;
+            }
+
+            test(name, fn) {
+                this.tests.push({ name, fn });
+            }
+
+            run() {
+                const output = document.getElementById('output');
+
+                this.tests.forEach(({ name, fn }) => {
+                    try {
+                        fn();
+                        this.passed++;
+                        output.innerHTML += `
+                            <div class="test pass">
+                                <div class="test-name">✅ ${name}</div>
+                                <div>PASSED</div>
+                            </div>
+                        `;
+                    } catch (error) {
+                        this.failed++;
+                        output.innerHTML += `
+                            <div class="test fail">
+                                <div class="test-name">❌ ${name}</div>
+                                <div>${error.message}</div>
+                            </div>
+                        `;
+                    }
+                });
+
+                output.innerHTML = `
+                    <div class="summary">
+                        <strong>Test Results:</strong><br>
+                        ✅ Passed: ${this.passed}<br>
+                        ❌ Failed: ${this.failed}<br>
+                        📊 Total: ${this.tests.length}
+                    </div>
+                ` + output.innerHTML;
+            }
+
+            assertEqual(actual, expected, message = '') {
+                if (actual !== expected) {
+                    throw new Error(`
+                        ${message}<br>
+                        Expected: <code>${expected}</code><br>
+                        Actual: <code>${actual}</code>
+                    `);
+                }
+            }
+
+            assertClose(actual, expected, tolerance = 0.001, message = '') {
+                if (Math.abs(actual - expected) > tolerance) {
+                    throw new Error(`
+                        ${message}<br>
+                        Expected: <code>${expected}</code> (±${tolerance})<br>
+                        Actual: <code>${actual}</code><br>
+                        Difference: <code>${Math.abs(actual - expected)}</code>
+                    `);
+                }
+            }
+        }
+
+        const runner = new TestRunner();
+
+        // ==================== BASIC TAX TESTS ====================
+        runner.test('Test 1: Ingen skat (0%)', () => {
+            const taxpayer = new TaxPayer(100000, [999999, 0]);
+            runner.assertEqual(taxpayer.getTotalTax(), 0, 'Ingen skat skal give 0 kr i skat');
+            runner.assertEqual(taxpayer.getIncomeAfterTax(), 100000, 'Indkomst efter skat skal være uændret');
+        });
+
+        runner.test('Test 2: Flad skat 25% på 100,000 kr', () => {
+            const taxpayer = new TaxPayer(100000, [999999, 25]);
+            const expectedTax = 25000; // 25% of 100k
+            const expectedAfterTax = 75000;
+
+            runner.assertEqual(
+                taxpayer.getTotalTax(),
+                expectedTax,
+                `Flad skat 25% af 100k skal give ${expectedTax} kr i skat`
+            );
+            runner.assertEqual(
+                taxpayer.getIncomeAfterTax(),
+                expectedAfterTax,
+                `Efter skat skal være ${expectedAfterTax} kr`
+            );
+        });
+
+        runner.test('Test 3: Flad skat 25% på 500,000 kr', () => {
+            const taxpayer = new TaxPayer(500000, [999999, 25]);
+            const expectedTax = 125000; // 25% of 500k
+            const expectedAfterTax = 375000;
+
+            runner.assertEqual(
+                taxpayer.getTotalTax(),
+                expectedTax,
+                `Flad skat 25% af 500k skal give ${expectedTax} kr i skat`
+            );
+            runner.assertEqual(
+                taxpayer.getIncomeAfterTax(),
+                expectedAfterTax,
+                `Efter skat skal være ${expectedAfterTax} kr`
+            );
+        });
+
+        // ==================== PROGRESSIVE TAX TESTS ====================
+        runner.test('Test 4: Simpel progressiv skat - under første trin', () => {
+            // 8% on first 50k
+            const taxpayer = new TaxPayer(30000, [50000, 8]);
+            const expectedTax = 2400; // 30k * 8%
+
+            runner.assertEqual(
+                taxpayer.getTotalTax(),
+                expectedTax,
+                `30k med 8% skal give ${expectedTax} kr i skat`
+            );
+        });
+
+        runner.test('Test 5: Progressiv skat - præcis på grænsen', () => {
+            // 8% on first 50k
+            const taxpayer = new TaxPayer(50000, [50000, 8]);
+            const expectedTax = 4000; // 50k * 8%
+
+            runner.assertEqual(
+                taxpayer.getTotalTax(),
+                expectedTax,
+                `50k med 8% skal give ${expectedTax} kr i skat`
+            );
+        });
+
+        runner.test('Test 6: Progressiv skat - to trin', () => {
+            // 8% on first 50k, 12% on next 200k
+            // Income: 100k
+            // Tax: 50k*8% + 50k*12% = 4000 + 6000 = 10000
+            const taxpayer = new TaxPayer(100000, [50000, 8, 200000, 12]);
+            const expectedTax = 10000;
+
+            runner.assertEqual(
+                taxpayer.getTotalTax(),
+                expectedTax,
+                `100k med [50k@8%, 200k@12%] skal give ${expectedTax} kr i skat`
+            );
+        });
+
+        runner.test('Test 7: Progressiv skat - fuldt dansk system', () => {
+            // Danish system: 8% on first 50k, 12% on next 200k, 15% on rest
+            // Income: 500k
+            // Tax: 50k*8% + 200k*12% + 250k*15% = 4000 + 24000 + 37500 = 65500
+            const taxpayer = new TaxPayer(500000, [50000, 8, 200000, 12, 400000, 15]);
+            const expectedTax = 65500;
+            const effectiveRate = (65500 / 500000) * 100; // Should be 13.1%
+
+            runner.assertEqual(
+                taxpayer.getTotalTax(),
+                expectedTax,
+                `500k med dansk system skal give ${expectedTax} kr i skat (effektiv sats: ${effectiveRate.toFixed(1)}%)`
+            );
+        });
+
+        runner.test('Test 8: Meget høj indkomst', () => {
+            // Income: 2,000,000
+            // Tax: 50k*8% + 200k*12% + 400k*15% + 1,350k*15% = 4000 + 24000 + 60000 + 202500 = 290500
+            const taxpayer = new TaxPayer(2000000, [50000, 8, 200000, 12, 400000, 15, 999999, 15]);
+            const expectedTax = 290500;
+
+            runner.assertEqual(
+                taxpayer.getTotalTax(),
+                expectedTax,
+                `2M kr skal give ${expectedTax} kr i skat`
+            );
+        });
+
+        // ==================== GINI TESTS ====================
+        runner.test('Test 9: Gini med flad skat skal reducere ulighed', () => {
+            // Create a simple unequal distribution
+            const incomes = [10000, 20000, 30000, 40000, 100000];
+            const giniBefore = GiniCalculator.calculateGini(incomes);
+
+            // Apply 25% flat tax
+            const results = TaxSystem.applyTaxes(incomes, [999999, 25]);
+
+            if (Math.abs(results.giniBefore - results.giniAfter) < 0.001) {
+                throw new Error(`
+                    Flad skat skal reducere Gini-koefficienten!<br>
+                    Før: <code>${results.giniBefore.toFixed(3)}</code><br>
+                    Efter: <code>${results.giniAfter.toFixed(3)}</code><br>
+                    Ændring: <code>${results.giniChange.toFixed(3)}</code>
+                `);
+            }
+        });
+
+        runner.test('Test 10: Progressiv skat skal reducere mere end flad skat', () => {
+            const incomes = [50000, 100000, 200000, 500000, 1000000];
+
+            // Flat 20% tax
+            const flatResults = TaxSystem.applyTaxes(incomes, [999999, 20]);
+
+            // Progressive tax
+            const progressiveResults = TaxSystem.applyTaxes(incomes, [50000, 8, 200000, 12, 500000, 20]);
+
+            if (progressiveResults.giniChange <= flatResults.giniChange) {
+                throw new Error(`
+                    Progressiv skat skal reducere ulighed mere end flad skat!<br>
+                    Flad skat reduktion: <code>${flatResults.giniChange.toFixed(3)}</code><br>
+                    Progressiv skat reduktion: <code>${progressiveResults.giniChange.toFixed(3)}</code>
+                `);
+            }
+        });
+
+        // Run all tests
+        runner.run();
+    </script>
+</body>
+</html>

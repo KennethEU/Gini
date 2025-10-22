@@ -341,6 +341,55 @@ select:focus {
     color: #0369a1;
 }
 
+/* Flat Tax Warning */
+.flat-tax-warning {
+    background: linear-gradient(135deg, #fff4e6 0%, #ffe0b2 100%);
+    border: 2px solid #ff9800;
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    animation: slideIn 0.3s ease-out;
+}
+
+.flat-tax-warning .warning-title {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #e65100;
+    margin-bottom: 0.5rem;
+}
+
+.flat-tax-warning p {
+    margin: 0.5rem 0;
+    color: #5d4037;
+    line-height: 1.5;
+}
+
+.flat-tax-warning ul {
+    margin: 0.5rem 0;
+    padding-left: 1.5rem;
+    color: #5d4037;
+}
+
+.flat-tax-warning li {
+    margin: 0.25rem 0;
+}
+
+.flat-tax-warning small {
+    color: #795548;
+    font-style: italic;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 /* Tax Brackets */
 .tax-brackets-container {
     display: flex;
