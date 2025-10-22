@@ -176,6 +176,13 @@ header h1 {
     margin-bottom: 0.75rem;
 }
 
+.help-text.mini {
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+    margin-bottom: 0;
+    font-style: italic;
+}
+
 /* Preset Buttons */
 .preset-buttons {
     display: grid;
@@ -260,8 +267,82 @@ select:focus {
     border-color: var(--primary-color);
 }
 
+/* Income Preview */
+.income-preview {
+    background: linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-top: 1rem;
+}
+
+.preview-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.preview-values {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.preview-item {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+.preview-item strong {
+    color: var(--primary-color);
+    font-weight: 700;
+}
+
+/* Tax Profiles */
+.tax-profiles {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.tax-profile-btn {
+    padding: 0.75rem 0.5rem;
+    border: 2px solid var(--border-color);
+    background: white;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.tax-profile-btn:hover {
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
+}
+
+.tax-profile-btn.active {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+.tax-explanation {
+    background: #f0f9ff;
+    border-left: 4px solid var(--primary-color);
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+    border-radius: 4px;
+}
+
+.tax-explanation .help-text {
+    margin: 0;
+    color: #0369a1;
+}
+
 /* Tax Brackets */
-#tax-brackets {
+.tax-brackets-container {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
@@ -269,10 +350,47 @@ select:focus {
 }
 
 .tax-bracket {
-    display: grid;
-    grid-template-columns: 1fr 1fr auto;
-    gap: 0.5rem;
+    background: white;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    padding: 0.75rem;
+    transition: all 0.2s;
+}
+
+.tax-bracket:hover {
+    border-color: var(--primary-color);
+    box-shadow: var(--shadow-sm);
+}
+
+.bracket-header {
+    display: flex;
+    justify-content: space-between;
     align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.bracket-label {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+}
+
+.bracket-inputs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.input-group label {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.25rem;
+    font-weight: 500;
 }
 
 .tax-bracket input {
@@ -287,19 +405,72 @@ select:focus {
     border-color: var(--primary-color);
 }
 
-.tax-bracket button {
-    padding: 0.5rem 0.75rem;
-    background: var(--danger-color);
-    color: white;
+.remove-bracket-btn {
+    padding: 0.25rem 0.5rem;
+    background: transparent;
+    color: var(--danger-color);
     border: none;
-    border-radius: 6px;
     cursor: pointer;
-    font-weight: 600;
+    font-size: 1.2rem;
+    font-weight: bold;
     transition: all 0.2s;
 }
 
-.tax-bracket button:hover {
-    background: #dc2626;
+.remove-bracket-btn:hover {
+    background: var(--danger-color);
+    color: white;
+    border-radius: 4px;
+}
+
+.btn-add-bracket {
+    width: 100%;
+    padding: 0.75rem;
+    background: white;
+    color: var(--primary-color);
+    border: 2px dashed var(--border-color);
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 1rem;
+}
+
+.btn-add-bracket:hover {
+    border-color: var(--primary-color);
+    background: #eff6ff;
+}
+
+/* Tax Example */
+.tax-example {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    border-radius: 8px;
+    padding: 1rem;
+    border: 2px solid #fbbf24;
+}
+
+.example-title {
+    font-weight: 700;
+    color: #92400e;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+}
+
+#example-text {
+    font-size: 0.85rem;
+    color: #78350f;
+}
+
+#example-text ul {
+    margin: 0.5rem 0;
+    padding-left: 1.5rem;
+}
+
+#example-text li {
+    margin: 0.25rem 0;
+}
+
+#example-text strong {
+    color: #92400e;
 }
 
 /* Buttons */
