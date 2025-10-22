@@ -18,6 +18,7 @@ class UIController {
     init() {
         this.setupEventListeners();
         this.initializeTaxBrackets();
+        this.updateIncomePreview();
         this.loadDefaultScenario();
         this.loadChallenge();
     }
@@ -36,12 +37,24 @@ class UIController {
 
         // Range sliders with live value display
         this.setupRangeSlider('population', 'population-value', (val) => val);
-        this.setupRangeSlider('groups', 'groups-value', (val) => val);
-        this.setupRangeSlider('group-span', 'span-value', (val) => val.toLocaleString('da-DK'));
+        this.setupRangeSlider('max-income', 'max-income-value', (val) => val.toLocaleString('da-DK'));
 
         // Distribution type
         document.getElementById('distribution-type').addEventListener('change', () => {
+            this.updateIncomePreview();
             this.autoCalculate();
+        });
+
+        // Max income slider
+        document.getElementById('max-income').addEventListener('input', () => {
+            this.updateIncomePreview();
+        });
+
+        // Tax profile buttons
+        document.querySelectorAll('.tax-profile-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                this.selectTaxProfile(e.target.dataset.profile);
+            });
         });
 
         // Calculate button
@@ -61,7 +74,7 @@ class UIController {
 
         // Auto-calculate on slider changes (debounced)
         let autoCalcTimeout;
-        ['population', 'groups', 'group-span'].forEach(id => {
+        ['population', 'max-income'].forEach(id => {
             document.getElementById(id).addEventListener('input', () => {
                 clearTimeout(autoCalcTimeout);
                 autoCalcTimeout = setTimeout(() => this.autoCalculate(), 500);
@@ -117,25 +130,39 @@ class UIController {
         const bracketDiv = document.createElement('div');
         bracketDiv.className = 'tax-bracket';
         bracketDiv.innerHTML = `
-            <input type="number"
-                   placeholder="Tærskel (kr)"
-                   value="${threshold}"
-                   min="0"
-                   step="10000"
-                   class="threshold-input">
-            <input type="number"
-                   placeholder="Sats (%)"
-                   value="${rate}"
-                   min="0"
-                   max="100"
-                   step="1"
-                   class="rate-input">
-            <button class="remove-bracket" title="Fjern skattetrin">×</button>
+            <div class="bracket-header">
+                <span class="bracket-label">Skattetrin ${container.children.length + 1}</span>
+                <button class="remove-bracket-btn" title="Fjern skattetrin">×</button>
+            </div>
+            <div class="bracket-inputs">
+                <div class="input-group">
+                    <label>De næste X kroner:</label>
+                    <input type="number"
+                           placeholder="fx 50000"
+                           value="${threshold}"
+                           min="0"
+                           step="10000"
+                           class="threshold-input">
+                </div>
+                <div class="input-group">
+                    <label>Beskattes med:</label>
+                    <input type="number"
+                           placeholder="fx 15"
+                           value="${rate}"
+                           min="0"
+                           max="100"
+                           step="1"
+                           class="rate-input">
+                    <span style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.25rem;">%</span>
+                </div>
+            </div>
         `;
 
         // Remove button handler
-        bracketDiv.querySelector('.remove-bracket').addEventListener('click', () => {
+        bracketDiv.querySelector('.remove-bracket-btn').addEventListener('click', () => {
             bracketDiv.remove();
+            this.renumberBrackets();
+            this.updateTaxExample();
             this.autoCalculate();
         });
 
@@ -144,11 +171,28 @@ class UIController {
             let timeout;
             input.addEventListener('input', () => {
                 clearTimeout(timeout);
-                timeout = setTimeout(() => this.autoCalculate(), 500);
+                timeout = setTimeout(() => {
+                    this.updateTaxExample();
+                    this.autoCalculate();
+                }, 500);
             });
         });
 
         container.appendChild(bracketDiv);
+        this.updateTaxExample();
+    }
+
+    /**
+     * Renumber bracket labels after deletion
+     */
+    renumberBrackets() {
+        const brackets = document.querySelectorAll('.tax-bracket');
+        brackets.forEach((bracket, index) => {
+            const label = bracket.querySelector('.bracket-label');
+            if (label) {
+                label.textContent = `Skattetrin ${index + 1}`;
+            }
+        });
     }
 
     /**
@@ -174,14 +218,16 @@ class UIController {
         document.getElementById('population').value = scenario.population;
         document.getElementById('population-value').textContent = scenario.population;
 
-        document.getElementById('groups').value = scenario.groups;
-        document.getElementById('groups-value').textContent = scenario.groups;
-
-        document.getElementById('group-span').value = scenario.groupSpan;
-        document.getElementById('span-value').textContent = scenario.groupSpan.toLocaleString('da-DK');
+        // Calculate max income from groups and groupSpan
+        const maxIncome = scenario.groups * scenario.groupSpan;
+        document.getElementById('max-income').value = maxIncome;
+        document.getElementById('max-income-value').textContent = maxIncome.toLocaleString('da-DK');
 
         // Update distribution type
         document.getElementById('distribution-type').value = scenario.distributionType;
+
+        // Update income preview
+        this.updateIncomePreview();
 
         // Update tax brackets
         const container = document.getElementById('tax-brackets');
@@ -214,6 +260,121 @@ class UIController {
     }
 
     /**
+     * Select a tax profile
+     */
+    selectTaxProfile(profile) {
+        // Update active button
+        document.querySelectorAll('.tax-profile-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        document.querySelector(`[data-profile="${profile}"]`).classList.add('active');
+
+        // Clear existing brackets
+        const container = document.getElementById('tax-brackets');
+        container.innerHTML = '';
+
+        // Load profile brackets
+        switch(profile) {
+            case 'none':
+                // No brackets - no tax
+                this.addTaxBracketElement(99999999, 0, 0);
+                break;
+            case 'flat':
+                // Flat 25% tax on everything
+                this.addTaxBracketElement(99999999, 25, 0);
+                break;
+            case 'progressive':
+                // Default progressive system
+                this.addTaxBracketElement(50000, 8, 0);
+                this.addTaxBracketElement(200000, 12, 1);
+                this.addTaxBracketElement(400000, 15, 2);
+                break;
+        }
+
+        this.updateTaxExample();
+        this.autoCalculate();
+    }
+
+    /**
+     * Update income preview box
+     */
+    updateIncomePreview() {
+        const maxIncome = parseInt(document.getElementById('max-income').value);
+        const distributionType = document.getElementById('distribution-type').value;
+        const population = parseInt(document.getElementById('population').value);
+
+        // Calculate typical incomes based on distribution
+        let lowest, median, highest;
+
+        switch(distributionType) {
+            case 'equal':
+                lowest = Math.floor(maxIncome * 0.8);
+                median = Math.floor(maxIncome * 0.9);
+                highest = maxIncome;
+                break;
+            case 'normal':
+                lowest = Math.floor(maxIncome * 0.2);
+                median = Math.floor(maxIncome * 0.5);
+                highest = maxIncome;
+                break;
+            case 'skewed':
+                lowest = 0;
+                median = Math.floor(maxIncome * 0.3);
+                highest = maxIncome;
+                break;
+            case 'extreme':
+                lowest = 0;
+                median = Math.floor(maxIncome * 0.15);
+                highest = maxIncome;
+                break;
+        }
+
+        document.getElementById('preview-values').innerHTML = `
+            <span class="preview-item">Laveste: <strong>${lowest.toLocaleString('da-DK')} kr</strong></span>
+            <span class="preview-item">Median: <strong>${median.toLocaleString('da-DK')} kr</strong></span>
+            <span class="preview-item">Højeste: <strong>${highest.toLocaleString('da-DK')} kr</strong></span>
+        `;
+    }
+
+    /**
+     * Update tax example calculation
+     */
+    updateTaxExample() {
+        const brackets = this.getTaxBrackets();
+        if (brackets.length === 0) {
+            document.getElementById('example-text').innerHTML = 'Tilføj skattetrin for at se eksempel';
+            return;
+        }
+
+        const exampleIncome = 500000;
+        let totalTax = 0;
+        let remainingIncome = exampleIncome;
+        let steps = [];
+
+        for (const bracket of brackets) {
+            if (remainingIncome <= 0) break;
+
+            const taxableAmount = Math.min(bracket.threshold, remainingIncome);
+            const tax = Math.floor(taxableAmount * (bracket.rate / 100));
+            totalTax += tax;
+
+            steps.push(`<li>De næste ${taxableAmount.toLocaleString('da-DK')} kr: ${bracket.rate}% = ${tax.toLocaleString('da-DK')} kr</li>`);
+
+            remainingIncome -= bracket.threshold;
+        }
+
+        const effectiveRate = ((totalTax / exampleIncome) * 100).toFixed(1);
+        const afterTax = exampleIncome - totalTax;
+
+        document.getElementById('example-text').innerHTML = `
+            En person der tjener <strong>${exampleIncome.toLocaleString('da-DK')} kr</strong> betaler:
+            <ul>${steps.join('')}</ul>
+            <strong>Total skat: ${totalTax.toLocaleString('da-DK')} kr (${effectiveRate}%)</strong><br>
+            <strong>Efter skat: ${afterTax.toLocaleString('da-DK')} kr</strong>
+        `;
+    }
+
+    /**
      * Load a random challenge
      */
     loadChallenge() {
@@ -227,9 +388,12 @@ class UIController {
     calculate() {
         // Get parameters from UI
         const population = parseInt(document.getElementById('population').value);
-        const groups = parseInt(document.getElementById('groups').value);
-        const groupSpan = parseInt(document.getElementById('group-span').value);
+        const maxIncome = parseInt(document.getElementById('max-income').value);
         const distributionType = document.getElementById('distribution-type').value;
+
+        // Fixed number of groups (10 is good for visualization)
+        const groups = 10;
+        const groupSpan = Math.floor(maxIncome / groups);
 
         // Generate group sizes
         const groupSizes = DistributionTemplates.getGroupSizes(distributionType, population, groups);

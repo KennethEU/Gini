@@ -67,35 +67,73 @@
                         Antal personer: <span id="population-value">100</span>
                         <input type="range" id="population" min="50" max="1000" value="100" step="50">
                     </label>
-                    <label>
-                        Indkomstgrupper: <span id="groups-value">10</span>
-                        <input type="range" id="groups" min="5" max="20" value="10" step="1">
-                    </label>
-                    <label>
-                        Indkomstspredning: <span id="span-value">100,000</span> kr
-                        <input type="range" id="group-span" min="50000" max="300000" value="100000" step="10000">
-                    </label>
                 </div>
 
                 <!-- Income Distribution -->
                 <div class="control-group">
                     <h3>Indkomstfordeling</h3>
-                    <p class="help-text">Juster fordelingen af personer i indkomstgrupper</p>
+                    <p class="help-text">Vælg hvordan indkomsterne er fordelt i befolkningen</p>
                     <select id="distribution-type">
-                        <option value="equal">Ligeligt fordelt</option>
-                        <option value="normal">Normal fordeling</option>
-                        <option value="skewed" selected>Skæv fordeling (realistisk)</option>
-                        <option value="extreme">Ekstrem ulighed</option>
+                        <option value="equal">⚖️ Ligeligt fordelt - Alle har næsten samme indkomst</option>
+                        <option value="normal">📊 Normal fordeling - Mest i middelklassen (bell curve)</option>
+                        <option value="skewed" selected>📈 Skæv fordeling - Mange fattige, få rige (realistisk)</option>
+                        <option value="extreme">⚠️ Ekstrem ulighed - Meget få superrige</option>
                     </select>
+
+                    <label>
+                        Højeste indkomst: <span id="max-income-value">1,000,000</span> kr/år
+                        <input type="range" id="max-income" min="500000" max="5000000" value="1000000" step="100000">
+                        <p class="help-text mini">Den rigeste persons indkomst</p>
+                    </label>
+
+                    <!-- Income preview -->
+                    <div class="income-preview" id="income-preview">
+                        <div class="preview-label">Eksempel indkomster:</div>
+                        <div class="preview-values" id="preview-values">
+                            <span class="preview-item">Laveste: <strong>0 kr</strong></span>
+                            <span class="preview-item">Median: <strong>300,000 kr</strong></span>
+                            <span class="preview-item">Højeste: <strong>1,000,000 kr</strong></span>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Tax System -->
                 <div class="control-group">
                     <h3>Skattesystem</h3>
-                    <div id="tax-brackets">
+                    <p class="help-text">Vælg en skatteprofil eller design dit eget system</p>
+
+                    <!-- Tax Profile Selector -->
+                    <div class="tax-profiles">
+                        <button class="tax-profile-btn" data-profile="none">Ingen skat</button>
+                        <button class="tax-profile-btn" data-profile="flat">Flad skat (25%)</button>
+                        <button class="tax-profile-btn active" data-profile="progressive">Progressiv</button>
+                    </div>
+
+                    <!-- Tax Brackets with Visual Representation -->
+                    <div class="tax-explanation">
+                        <p class="help-text"><strong>Progressiv skat betyder:</strong> Jo mere du tjener, jo højere procent betaler du.</p>
+                    </div>
+
+                    <div id="tax-brackets" class="tax-brackets-container">
                         <!-- Tax brackets will be added dynamically -->
                     </div>
-                    <button id="add-bracket" class="btn-secondary">+ Tilføj skattetrin</button>
+
+                    <button id="add-bracket" class="btn-add-bracket">+ Tilføj skattetrin</button>
+
+                    <!-- Example Calculation -->
+                    <div class="tax-example" id="tax-example">
+                        <div class="example-title">📝 Eksempel:</div>
+                        <div id="example-text">
+                            En person der tjener <strong>500,000 kr</strong> betaler:
+                            <ul>
+                                <li>De første 50,000 kr: 8% = 4,000 kr</li>
+                                <li>Næste 200,000 kr: 12% = 24,000 kr</li>
+                                <li>Næste 250,000 kr: 15% = 37,500 kr</li>
+                            </ul>
+                            <strong>Total skat: 65,500 kr (13.1%)</strong><br>
+                            <strong>Efter skat: 434,500 kr</strong>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Action Buttons -->
